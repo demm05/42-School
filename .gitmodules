@@ -1,0 +1,6 @@
+[submodule "intra-uuid-84002084-3140-499a-bca0-1a9a3abfc475-6212874-dmelnyk"]
+	path = intra-uuid-84002084-3140-499a-bca0-1a9a3abfc475-6212874-dmelnyk
+	url = git@vogsphere.42london.com:vogsphere/intra-uuid-84002084-3140-499a-bca0-1a9a3abfc475-6212874-dmelnyk
+[submodule "common-core/libft"]
+	path = common-core/libft
+	url = git@vogsphere.42london.com:vogsphere/intra-uuid-84002084-3140-499a-bca0-1a9a3abfc475-6212874-dmelnyk
