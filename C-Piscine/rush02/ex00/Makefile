@@ -1,0 +1,35 @@
+SDIR = ./srcs
+ODIR = ./objs
+HDIR = ./includes/
+
+SRCS := $(wildcard $(SDIR)/*.c)
+OBJS := $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(SRCS))
+
+BINARY = rush-02
+
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -I$(HDIR)
+
+all: directories $(BINARY)
+
+$(BINARY): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(ODIR)/%.o: $(SDIR)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+directories: 
+	mkdir -p $(ODIR)
+
+.PHONY: all clean fclean re
+
+clean:
+	rm -f $(ODIR)/*.o
+
+fclean: clean
+	rm -f $(BINARY)
+
+debug: $(OBJS)
+	$(CC) $(CFLAGS) -g -o $(BINARY)-debug $^
+
+re: fclean all debug
