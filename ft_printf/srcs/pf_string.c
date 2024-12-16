@@ -6,22 +6,40 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:42:26 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/14 17:42:27 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:50:06 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_printf.h"
+#include "../include/ft_printf.h"
+#include <unistd.h>
+
+size_t	ft_strlen(const char *str)
+{
+	const char	*anchor;
+
+	anchor = str;
+	while (*str)
+		str++;
+	return (str - anchor);
+}
+
+int	_pf_putstr(char *s, int fd)
+{
+	int	len;
+
+	if (!s)
+		return (0);
+	len = ft_strlen(s);
+	write(fd, s, len);
+	return (len);
+}
 
 int	pf_string(va_list val)
 {
 	char	*s;
-	int		i;
 
 	s = va_arg(val, char *);
-	i = 0;
 	if (!s)
 		s = "(null)";
-	while (s[i])
-		_putchar(s[i++]);
-	return (i);
+	return (_pf_putstr(s, 1));
 }

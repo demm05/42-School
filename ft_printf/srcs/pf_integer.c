@@ -6,57 +6,72 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:41:01 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/14 17:41:38 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:49:43 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_printf.h"
+#include "../include/ft_printf.h"
 
-static int	get_exp(int nb)
+static int	get_len_of_num(long n)
 {
-	int	exp;
+	int	len;
 
-	exp = 1;
-	while (nb / 10 != 0)
+	len = 1;
+	while (n > 9)
 	{
-		exp = exp * 10;
-		nb = nb / 10;
+		len++;
+		n /= 10;
 	}
-	return (exp);
+	return (len);
 }
 
-static void	initialize_var(int *nb, int *last, int *len)
+static void	set_values(int n, long *num, int *len, int *is_minus)
 {
-	*last = *nb % 10;
-	*nb /= 10;
+	*num = n;
 	*len = 0;
-	if (*nb < 0)
+	*is_minus = 0;
+	if (*num < 0)
 	{
-		*nb = -*nb;
-		*last = -*last;
-		*len += _putchar('-');
+		*is_minus = 1;
+		*num *= -1;
+		*len = *len + 1;
 	}
+	*len += get_len_of_num(*num);
+}
+
+char	*ft_itoa(int n)
+{
+	long	num;
+	int		len;
+	int		is_minus;
+	char	*res;
+
+	set_values(n, &num, &len, &is_minus);
+	res = malloc((len + 1) * sizeof(char));
+	if (!res)
+		return (0);
+	res[len] = 0;
+	while (len - is_minus)
+	{
+		res[len - 1] = num % 10 + '0';
+		num /= 10;
+		len--;
+	}
+	if (is_minus)
+		res[0] = '-';
+	return (res);
 }
 
 int	pf_integer(va_list val)
 {
-	int	nb;
-	int	last;
-	int	len;
-	int	exp;
+	int		nb;
+	char	*buffer;
 
 	nb = va_arg(val, int);
-	initialize_var(&nb, &last, &len);
-	if (nb > 0)
-	{
-		exp = get_exp(nb);
-		while (nb)
-		{
-			len += _putchar(nb / exp + '0');
-			nb %= exp;
-			exp /= 10;
-		}
-	}
-	len += _putchar(last + '0');
-	return (len);
+	buffer = ft_itoa(nb);
+	if (!buffer)
+		return (0);
+	nb = _pf_putstr(buffer, 1);
+	free(buffer);
+	return (nb);
 }

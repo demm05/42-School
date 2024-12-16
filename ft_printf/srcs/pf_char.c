@@ -6,11 +6,11 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:39:58 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/14 17:40:00 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:49:18 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_printf.h"
+#include "../include/ft_printf.h"
 #include <unistd.h>
 
 int	_putchar(char c)

@@ -6,12 +6,11 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:42:31 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/14 17:42:52 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:49:01 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_printf.h"
-#include <stdio.h>
+#include "../include/ft_printf.h"
 
 t_spec_formatter	get_spec(char c)
 {
@@ -28,13 +27,13 @@ t_spec_formatter	get_spec(char c)
 	if (c == 'u')
 		return (pf_unsigned);
 	if (c == 'x')
-		return (pf_hex);
+		return (pf_lhex);
 	if (c == 'X')
 		return (pf_uhex);
 	return (0);
 }
 
-void	parse_format(const char *format, t_format_info *info, va_list val)
+void	parse_specifier(const char *format, t_format_info *info, va_list val)
 {
 	t_spec_formatter	f;	
 
@@ -49,38 +48,50 @@ void	parse_format(const char *format, t_format_info *info, va_list val)
 	info->is_valid = 1;
 }
 
-int	ft_printf(const char *format, ...)
+int	parse_format(const char *format, va_list val)
 {
-	va_list			args;
-	t_format_info	f_info;
 	int				len;
 	int				i;
+	t_format_info	info;
 
-	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
-		return (-1);
-	va_start(args, format);
 	len = 0;
 	i = 0;
 	while (format[i])
 	{
 		if (format[i] == '%')
 		{
-			parse_format(format + i, &f_info, args);
-			if (f_info.is_valid)
+			parse_specifier(format + i, &info, val);
+			if (info.is_valid)
 			{
-				len += f_info.len;
-				i += f_info.f_len;
+				len += info.len;
+				i += info.f_len;
 				continue ;
 			}
 		}
 		len += _putchar(format[i++]);
 	}
+	return (len);
+}
+
+int	ft_printf(const char *format, ...)
+{
+	va_list			args;
+	int				len;
+
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
+		return (-1);
+	va_start(args, format);
+	len = parse_format(format, args);
 	va_end(args);
 	return (len);
 }
 
 // int	main(void)
 // {
-// 	printf("Hello my name is: %s, I'm %d year's old", "Dmytro", 19);
-// 	return (1);
+// 	int a;
+// 
+// 	a = 123;
+// 	printf("Hello my name is: %#x\n", a);
+// 	ft_printf("Hello my name is: %x", a);
+// 	return (0);
 // }

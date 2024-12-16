@@ -6,41 +6,54 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:40:36 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/14 17:40:50 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:50:19 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_printf.h"
+#include "../include/ft_printf.h"
 
-static unsigned int	get_exp(unsigned int nb)
+static int	get_len_of_num(unsigned int n)
 {
-	unsigned int	exp;
+	int	len;
 
-	exp = 1;
-	while (nb / 10 != 0)
+	len = 1;
+	while (n > 9)
 	{
-		exp = exp * 10;
-		nb = nb / 10;
+		len++;
+		n /= 10;
 	}
-	return (exp);
+	return (len);
+}
+
+char	*ft_uitoa(unsigned int num)
+{
+	int		len;
+	char	*res;
+
+	len = get_len_of_num(num);
+	res = malloc((len + 1) * sizeof(char));
+	if (!res)
+		return (0);
+	res[len] = 0;
+	while (len)
+	{
+		res[len - 1] = num % 10 + '0';
+		num /= 10;
+		len--;
+	}
+	return (res);
 }
 
 int	pf_unsigned(va_list val)
 {
 	unsigned int	nb;
-	unsigned int	len;
-	unsigned int	exp;
+	char			*buffer;
 
 	nb = va_arg(val, unsigned int);
-	if (nb == 0)
-		return (_putchar('0'));
-	len = 0;
-	exp = get_exp(nb);
-	while (nb)
-	{
-		len += _putchar(nb / exp + '0');
-		nb %= exp;
-		exp /= 10;
-	}
-	return (len);
+	buffer = ft_uitoa(nb);
+	if (!buffer)
+		return (0);
+	nb = _pf_putstr(buffer, 1);
+	free(buffer);
+	return (nb);
 }

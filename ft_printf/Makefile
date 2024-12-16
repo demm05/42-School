@@ -20,10 +20,7 @@ $(ODIR)/%.o: $(SDIR)/%.c
 	@mkdir -p $(ODIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BINARY): $(OBJS)
-	$(CC) $(CFLAGS) -g -o $@ $^
-
-.PHONY: all clean fclean re $(BINARY) a m b 
+bonus : all
 
 clean:
 	@rm -rf objs
@@ -31,6 +28,16 @@ clean:
 fclean: clean
 	@rm -rf $(BINARY) $(NAME)
 
+re: fclean all
+
+.PHONY: all bonus clean fclean re run $(BINARY) a m b 
+
+$(BINARY): $(OBJS)
+	$(CC) $(CFLAGS) -g -o $(BINARY) $^
+
+run: $(BINARY)
+	@clear
+	./$(BINARY)
 a:
 	$(MAKE) -C ./printfTester a 
 m:
