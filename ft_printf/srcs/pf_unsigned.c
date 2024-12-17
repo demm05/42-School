@@ -12,7 +12,7 @@
 
 #include "../include/ft_printf.h"
 
-static int	get_len_of_num(unsigned int n)
+static int	get_len_of_num(long n)
 {
 	int	len;
 
@@ -25,35 +25,40 @@ static int	get_len_of_num(unsigned int n)
 	return (len);
 }
 
-char	*ft_uitoa(unsigned int num)
+char	*ft_uitoa(unsigned int num, int precision)
 {
 	int		len;
+	int		len_of_num;
 	char	*res;
 
-	len = get_len_of_num(num);
+	len_of_num = get_len_of_num(num);
+	len = len_of_num;
+	if (precision > len)
+		len += precision - len;
 	res = malloc((len + 1) * sizeof(char));
 	if (!res)
 		return (0);
-	res[len] = 0;
-	while (len)
+	res[len--] = 0;
+	while (len_of_num--)
 	{
-		res[len - 1] = num % 10 + '0';
+		res[len--] = num % 10 + '0';
 		num /= 10;
-		len--;
 	}
+	while (len >= 0)
+		res[len--] = '0';
 	return (res);
 }
 
-int	pf_unsigned(va_list val)
+char	*pf_unsigned(va_list val, t_spec_info s_info)
 {
 	unsigned int	nb;
 	char			*buffer;
 
 	nb = va_arg(val, unsigned int);
-	buffer = ft_uitoa(nb);
+	if (nb == 0 && s_info.is_precision && !s_info.precision)
+		return (ft_strdup(""));
+	buffer = ft_uitoa(nb, s_info.precision);
 	if (!buffer)
 		return (0);
-	nb = _pf_putstr(buffer, 1);
-	free(buffer);
-	return (nb);
+	return (buffer);
 }

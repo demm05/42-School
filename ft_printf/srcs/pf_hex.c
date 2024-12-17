@@ -13,49 +13,81 @@
 #include "../include/ft_printf.h"
 
 static int	hex_len(unsigned long long nb);
-static char	*get_hex(unsigned long long nb, int is_upper);
+static void	get_hex(unsigned long long nb, char *buffer, int is_upper, int precision);
 
-int	pf_uhex(va_list val)
+char	*pf_uhex(va_list val, t_spec_info s_info)
 {
 	unsigned int	nb;
 	int				len;
 	char			*buffer;
 
 	nb = va_arg(val, unsigned int);
-	if (nb == 0)
-		return (_putchar('0'));
-	buffer = get_hex(nb, 1);
-	len = _pf_putstr(buffer, 1);
-	free(buffer);
-	return (len);
+	if (nb == 0 && !s_info.is_precision)
+		return (ft_strdup("0"));
+	len = hex_len(nb);
+	if (len < s_info.precision)
+		len = s_info.precision;
+	buffer = malloc(sizeof(char) * (len + 3));
+	if (!buffer)
+		return (0);
+	if (s_info.flags.hash)
+	{
+		get_hex(nb, buffer + 2, 1, s_info.precision);
+		buffer[0] = '0';
+		buffer[1] = 'X';
+	}
+	else
+		get_hex(nb, buffer, 1, s_info.precision);
+	return (buffer);
 }
 
-int	pf_lhex(va_list val)
+char	*pf_lhex(va_list val, t_spec_info s_info)
 {
 	unsigned int	nb;
 	int				len;
 	char			*buffer;
 
 	nb = va_arg(val, unsigned int);
-	if (nb == 0)
-		return (_putchar('0'));
-	buffer = get_hex(nb, 0);
-	len = _pf_putstr(buffer, 1);
-	free(buffer);
-	return (len);
+	if (nb == 0 && !s_info.is_precision)
+		return (ft_strdup("0"));
+	len = hex_len(nb);
+	if (len < s_info.precision)
+		len = s_info.precision;
+	buffer = malloc(sizeof(char) * (len + 3));
+	if (!buffer)
+		return (0);
+	if (s_info.flags.hash)
+	{
+		get_hex(nb, buffer + 2, 0, s_info.precision);
+		buffer[0] = '0';
+		buffer[1] = 'x';
+	}
+	else
+		get_hex(nb, buffer, 0, s_info.precision);
+	return (buffer);
 }
 
-static char	*get_hex(unsigned long long nb, int is_upper)
+static void	fill_zeros(char *buffer, int size)
 {
-	int		i;
-	int		len;
-	int		r;
-	char	*buffer;
+	int	i;
+
+	i = 0;
+	while (i < size)
+		buffer[i++] = '0';
+}
+
+static void	get_hex(unsigned long long nb, char *buffer, int is_upper, int precision)
+{
+	int	i;
+	int	len;
+	int	r;
 
 	len = hex_len(nb);
-	buffer = malloc(sizeof(char) * (len + 1));
-	if (!buffer)
-		return (NULL);
+	if (precision > len)
+	{
+		fill_zeros(buffer, precision - len);
+		len = precision;
+	}
 	i = 0;
 	while (i < len)
 	{
@@ -70,7 +102,6 @@ static char	*get_hex(unsigned long long nb, int is_upper)
 		nb /= 16;
 	}
 	buffer[i] = 0;
-	return (buffer);
 }
 
 static int	hex_len(unsigned long long nb)

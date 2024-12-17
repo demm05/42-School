@@ -15,7 +15,7 @@
 static void	get_hex(unsigned long long nb, char *buffer, int is_upper);
 static int	hex_len(unsigned long long nb);
 
-int	pf_pointer(va_list val)
+char	*pf_pointer(va_list val, t_spec_info s_info)
 {
 	unsigned long long	nb;
 	int					len;
@@ -23,16 +23,14 @@ int	pf_pointer(va_list val)
 
 	nb = va_arg(val, unsigned long long);
 	if (!nb)
-		return (_pf_putstr("(nil)", 1));
+		return (ft_strdup("(nil)"));
 	buffer = malloc(sizeof(char) * (hex_len(nb) + 3));
 	if (!buffer)
 		return (0);
 	get_hex(nb, buffer + 2, 0);
 	buffer[0] = '0';
 	buffer[1] = 'x';
-	len = _pf_putstr(buffer, 1);
-	free(buffer);
-	return (len);
+	return (buffer);
 }
 
 static void	get_hex(unsigned long long nb, char *buffer, int is_upper)

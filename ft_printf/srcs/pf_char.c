@@ -19,18 +19,25 @@ int	_putchar(char c)
 	return (1);
 }
 
-int	pf_char(va_list val)
+char	*pf_char(va_list val, t_spec_info s_info)
 {
 	char	c;
+	char	*buffer;
 
 	c = va_arg(val, int);
-	_putchar(c);
-	return (1);
+	buffer = malloc(sizeof(char) * 2);
+	buffer[0] = c;
+	buffer[1] = 0;
+	return (buffer);
 }
 
-int	pf_37(va_list val)
+char	*pf_37(va_list val, t_spec_info s_info)
 {
+	char	*buffer;
+
 	(void)val;
-	_putchar('%');
-	return (1);
+	buffer = malloc(sizeof(char) * 2);
+	buffer[0] = '%';
+	buffer[1] = 0;
+	return (buffer);
 }

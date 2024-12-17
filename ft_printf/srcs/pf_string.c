@@ -34,12 +34,18 @@ int	_pf_putstr(char *s, int fd)
 	return (len);
 }
 
-int	pf_string(va_list val)
+char	*pf_string(va_list val, t_spec_info s_info)
 {
 	char	*s;
 
 	s = va_arg(val, char *);
 	if (!s)
+	{
+		if (s_info.precision < 5 && s_info.is_precision)
+			return (ft_strdup(""));
 		s = "(null)";
-	return (_pf_putstr(s, 1));
+	}
+	if (s_info.is_precision)
+		return (ft_substr(s, 0, s_info.precision));
+	return (ft_strdup(s));
 }

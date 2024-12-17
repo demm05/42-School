@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
+#include <stdio.h>
 
 static int	get_len_of_num(long n)
 {
@@ -42,6 +43,8 @@ static void	set_values(int n, long *num, int *len, int *is_minus, t_spec_info s_
 	*len += len_of_n;
 	if (s_info.precision > len_of_n)
 		*len += s_info.precision - len_of_n;
+	if (s_info.width > *len && !s_info.flags.minus)
+		*len += s_info.width - len_of_n;
 }
 
 char	*pf_itoa(int n, t_spec_info s_info)
@@ -51,6 +54,7 @@ char	*pf_itoa(int n, t_spec_info s_info)
 	int		is_minus;
 	char	*res;
 	int		len_of_n;
+	char	pad;
 
 	set_values(n, &num, &len, &is_minus, s_info);
 	len_of_n = get_len_of_num(num);
@@ -63,8 +67,12 @@ char	*pf_itoa(int n, t_spec_info s_info)
 		res[len--] = num % 10 + '0';
 		num /= 10;
 	}
+	if (s_info.flags.zero || (s_info.is_precision && s_info.precision > s_info.width))
+		pad = '0';
+	else
+		pad = ' ';
 	while (len - is_minus >= 0)
-		res[len--] = '0';
+		res[len--] = pad;
 	if (is_minus)
 		res[0] = '-';
 	return (res);
