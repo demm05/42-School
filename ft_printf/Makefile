@@ -9,7 +9,7 @@ SRCS := $(wildcard $(SDIR)/*.c)
 OBJS := $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(SRCS))
 
 CC = gcc
-CFLAGS = -Wall -Wextra -g -I $(HDIR)
+CFLAGS = -Wall -Wextra -Werror -I $(HDIR)
 
 all: $(NAME)
 
@@ -30,16 +30,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re run $(BINARY) a m b 
-
-$(BINARY): $(OBJS)
-	$(CC) -Wall -Wextra -g -o $(BINARY) $^
-
-run: $(BINARY)
-	./$(BINARY)
-a:
-	$(MAKE) -C ./printfTester a 
-m:
-	$(MAKE) -C ./printfTester m 
-b:
-	$(MAKE) -C ./printfTester b 
+.PHONY: all bonus clean fclean re

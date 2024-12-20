@@ -49,15 +49,15 @@ char	*ft_uitoa(unsigned int num, int precision)
 	return (res);
 }
 
-char	*pf_unsigned(va_list val, t_spec_info s_info)
+char	*pf_unsigned(va_list val, t_spec_info *s_info)
 {
 	unsigned int	nb;
 	char			*buffer;
 
 	nb = va_arg(val, unsigned int);
-	if (nb == 0 && s_info.is_precision && !s_info.precision)
+	if (nb == 0 && s_info->is_precision && !s_info->precision)
 		return (ft_strdup(""));
-	buffer = ft_uitoa(nb, s_info.precision);
+	buffer = ft_uitoa(nb, s_info->precision);
 	if (!buffer)
 		return (0);
 	return (buffer);

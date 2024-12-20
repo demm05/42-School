@@ -6,7 +6,7 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:40:56 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/16 18:49:56 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/19 16:53:46 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 static void	get_hex(unsigned long long nb, char *buffer, int is_upper);
 static int	hex_len(unsigned long long nb);
 
-char	*pf_pointer(va_list val, t_spec_info s_info)
+char	*pf_pointer(va_list val, t_spec_info *s_info)
 {
 	unsigned long long	nb;
-	int					len;
 	char				*buffer;
 
+	(void)s_info;
 	nb = va_arg(val, unsigned long long);
 	if (!nb)
 		return (ft_strdup("(nil)"));

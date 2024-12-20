@@ -6,7 +6,7 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 17:42:26 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/16 18:50:06 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:11:15 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,19 @@ int	_pf_putstr(char *s, int fd)
 	return (len);
 }
 
-char	*pf_string(va_list val, t_spec_info s_info)
+char	*pf_string(va_list val, t_spec_info *s_info)
 {
 	char	*s;
 
 	s = va_arg(val, char *);
+	s_info->flags.zero = 0;
 	if (!s)
 	{
-		if (s_info.precision < 5 && s_info.is_precision)
+		if (s_info->precision <= 5 && s_info->is_precision)
 			return (ft_strdup(""));
 		s = "(null)";
 	}
-	if (s_info.is_precision)
-		return (ft_substr(s, 0, s_info.precision));
+	if (s_info->is_precision)
+		return (ft_substr(s, 0, s_info->precision));
 	return (ft_strdup(s));
 }

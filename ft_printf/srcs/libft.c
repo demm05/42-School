@@ -1,16 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/19 15:37:02 by dmelnyk           #+#    #+#             */
+/*   Updated: 2024/12/19 15:37:03 by dmelnyk          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/ft_printf.h"
-
-int	ft_atoi(const char *nptr)
-{
-	int	result;
-	int	i;
-
-	result = 0;
-	i = 0;
-	while (nptr[i] >= '0' && nptr[i] <= '9' && nptr[i])
-		result = result * 10 + (nptr[i++]- '0');
-	return (result);
-}
 
 char	*ft_strdup(const char *src)
 {

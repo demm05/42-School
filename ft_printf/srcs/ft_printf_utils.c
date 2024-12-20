@@ -1,61 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/19 14:49:36 by dmelnyk           #+#    #+#             */
+/*   Updated: 2024/12/19 17:03:25 by dmelnyk          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/ft_printf.h"
 
-int	get_len_of_flags(t_flags flags)
+int	check_flag(char c, t_flags *flags)
 {
-	int	len;
-
-	len = 0;
-	if (flags.hash)
-		len++;
-	if (flags.zero)
-		len++;
-	if (flags.minus)
-		len++;
-	if (flags.space)
-		len++;
-	if (flags.plus)
-		len++;
-	return (len);
-}
-
-int	parse_flag(char c, t_format_info *t_info, t_flags *flags)
-{
-	if (c == '+')
+	if (c == '+' || c == '-' || c == '0' || c == ' ' || c == '#')
 	{
-		if (flags->plus || flags->space)
+		if ((c == '+' && flags->space) || \
+			(c == ' ' && flags->plus))
 			return (-1);
-		flags->plus = 1;
-		return (1);
-	}
-	else if (c == ' ')
-	{
-		if (flags->plus || flags->space)
-			return (-1);
-		flags->space = 1;
-		return (1);
-	}
-	else if (c == '-')
-	{
-		if (flags->minus || flags->zero)
-			return (-1);
-		flags->minus = 1;
-		return (1);
-	}
-	else if (c == '0')
-	{
-		if (flags->zero)
-			return (1);
-		if (flags->minus)
-			return (-1);
-		flags->zero = 1;
-		return (1);
-	}
-	else if (c == '#')
-	{
-		if (flags->hash)
-			return (-1);
-		flags->hash = 1;
+		if (c == '+')
+			flags->plus = 1;
+		else if (c == '-')
+			flags->minus = 1;
+		else if (c == ' ')
+			flags->space = 1;
+		else if (c == '0')
+			flags->zero = 1;
+		else if (c == '#')
+			flags->hash = 1;
 		return (1);
 	}
 	return (0);
+}
+
+int	pf_atoi(const char *nptr)
+{
+	int	result;
+	int	i;
+
+	result = 0;
+	i = 0;
+	while (nptr[i] >= '0' && nptr[i] <= '9' && nptr[i])
+		result = result * 10 + (nptr[i++] - '0');
+	return (result);
 }
