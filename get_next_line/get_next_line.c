@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/13 14:29:35 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/13 15:31:30 by dmelnyk          ###   ########.fr       */
+/*   Created: 2024/12/19 12:35:17 by dmelnyk           #+#    #+#             */
+/*   Updated: 2024/12/19 12:43:40 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,47 +36,6 @@ int	get_line_len(t_list *lst)
 	return (len);
 }
 
-void	create_list(int fd, t_list **lst)
-{
-	char	*buffer;
-	int		bytes_read;
-
-	if (is_there_nl(*lst))
-		return ;
-	while (1)
-	{
-		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			return ;
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (!bytes_read)
-		{
-			free(buffer);
-			return ;
-		}
-		buffer[bytes_read] = 0;
-		if (ft_strchr(buffer, '\n'))
-		{
-			append_list(lst, buffer, bytes_read, 1);
-			return ;
-		}
-		append_list(lst, buffer, bytes_read, 0);
-	}
-}
-
-char	*get_line(t_list *lst)
-{
-	char	*line;
-	int		line_len;
-
-	line_len = get_line_len(lst);
-	line = malloc(sizeof(char) * (line_len + 1));
-	if (!line)
-		return (NULL);
-	join_nodes(lst, line);
-	return (line);
-}
-
 void	clean_list(t_list **lst)
 {
 	t_list	*current;
@@ -102,14 +61,59 @@ void	clean_list(t_list **lst)
 	}
 }
 
+char	*get_line(t_list *lst)
+{
+	char	*line;
+	int		line_len;
+
+	line_len = get_line_len(lst);
+	line = malloc(sizeof(char) * (line_len + 1));
+	if (!line)
+		return (NULL);
+	join_nodes(lst, line);
+	return (line);
+}
+
+int	create_list(int fd, t_list **lst)
+{
+	char	*buffer;
+	int		bytes_read;
+
+	if (is_there_nl(*lst))
+		return (0);
+	while (1)
+	{
+		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!buffer)
+			return (0);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+		{
+			free(buffer);
+			return (bytes_read);
+		}
+		buffer[bytes_read] = 0;
+		if (ft_strchr(buffer, '\n'))
+		{
+			append_list(lst, buffer, bytes_read, 1);
+			return (bytes_read);
+		}
+		append_list(lst, buffer, bytes_read, 0);
+	}
+}
+
 char	*get_next_line(int fd)
 {
 	static t_list	*lst;
 	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0 || fd > FOPEN_MAX)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	create_list(fd, &lst);
+	if (create_list(fd, &lst) == -1)
+	{
+		clean_list(&lst);
+		return (NULL);
+	}
 	if (!lst)
 		return (NULL);
 	line = get_line(lst);

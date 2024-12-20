@@ -6,11 +6,11 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:29:35 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/13 15:57:18 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/19 12:43:46 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	get_line_len(t_list *lst)
 {
@@ -34,47 +34,6 @@ int	get_line_len(t_list *lst)
 		len++;
 	}
 	return (len);
-}
-
-void	create_list(int fd, t_list **lst)
-{
-	char	*buffer;
-	int		bytes_read;
-
-	if (is_there_nl(*lst))
-		return ;
-	while (1)
-	{
-		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			return ;
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (!bytes_read)
-		{
-			free(buffer);
-			return ;
-		}
-		buffer[bytes_read] = 0;
-		if (ft_strchr(buffer, '\n'))
-		{
-			append_list(lst, buffer, bytes_read, 1);
-			return ;
-		}
-		append_list(lst, buffer, bytes_read, 0);
-	}
-}
-
-char	*get_line(t_list *lst)
-{
-	char	*line;
-	int		line_len;
-
-	line_len = get_line_len(lst);
-	line = malloc(sizeof(char) * (line_len + 1));
-	if (!line)
-		return (NULL);
-	join_nodes(lst, line);
-	return (line);
 }
 
 void	clean_list(t_list **lst)
@@ -102,14 +61,59 @@ void	clean_list(t_list **lst)
 	}
 }
 
+char	*get_line(t_list *lst)
+{
+	char	*line;
+	int		line_len;
+
+	line_len = get_line_len(lst);
+	line = malloc(sizeof(char) * (line_len + 1));
+	if (!line)
+		return (NULL);
+	join_nodes(lst, line);
+	return (line);
+}
+
+int	create_list(int fd, t_list **lst)
+{
+	char	*buffer;
+	int		bytes_read;
+
+	if (is_there_nl(*lst))
+		return (0);
+	while (1)
+	{
+		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!buffer)
+			return (0);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+		{
+			free(buffer);
+			return (bytes_read);
+		}
+		buffer[bytes_read] = 0;
+		if (ft_strchr(buffer, '\n'))
+		{
+			append_list(lst, buffer, bytes_read, 1);
+			return (0);
+		}
+		append_list(lst, buffer, bytes_read, 0);
+	}
+}
+
 char	*get_next_line(int fd)
 {
 	static t_list	*lsts[FOPEN_MAX];
 	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0 || fd >= FOPEN_MAX)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= FOPEN_MAX)
 		return (NULL);
-	create_list(fd, &lsts[fd]);
+	if (create_list(fd, &lsts[fd]) == -1)
+	{
+		clean_list(&lsts[fd]);
+		return (NULL);
+	}
 	if (!lsts[fd])
 		return (NULL);
 	line = get_line(lsts[fd]);
@@ -117,21 +121,22 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
+// #include <fcntl.h>
 // int	main(void)
 // {
 // 	int		fd;
 // 	char	*res;
 // 	int 	i;
 // 	t_list	*lst;
-//
-// 	fd = open("files/alternate_line_nl_with_nl", O_RDONLY);
+// 
+// 	fd = open("gnlTester/files/multiple_line_no_nl", O_RDONLY);
 // 	i = 0;
 // 	//res = get_next_line(fd);
 // 	// printf("%s", res);
 // 	while ((res = get_next_line(fd)))
 // 	{
 // 		printf("res: %s", res);
-// 		 free(res);
+// 		free(res);
 // 		i++;
 // 	}
 // 	return (0);

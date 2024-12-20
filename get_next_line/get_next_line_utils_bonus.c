@@ -6,11 +6,11 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 14:24:50 by dmelnyk           #+#    #+#             */
-/*   Updated: 2024/12/13 15:49:29 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2024/12/19 12:44:02 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strchr(const char *s, int c)
 {
