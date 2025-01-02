@@ -1,6 +1,6 @@
 CLIENT = client
 SERVER = server
-
+TEST = include
 HDIR = ./include
 SDIR = ./srcs
 ODIR = ./objs
