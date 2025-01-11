@@ -1,12 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/02 16:55:32 by dmelnyk           #+#    #+#             */
+/*   Updated: 2025/01/02 16:55:37 by dmelnyk          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minitalk.h"
 
-//volatile sig_atomic_t	ack_received = 0; // Flag for acknowledgment
-volatile int ack_received = 0; // Flag for acknowledgment
+volatile sig_atomic_t	g_ack_received = 0;
 
-void ack_handler(int sig) 
+void	ack_handler(int sig)
 {
-    (void)sig;
-    ack_received = 1;
+	(void)sig;
+	g_ack_received = 1;
 }
 
 int	ft_atoi(const char *nptr)
@@ -29,17 +40,24 @@ int	ft_atoi(const char *nptr)
 void	send_char(pid_t pid, int c)
 {
 	int	bit;
+	int	i;
 
 	bit = 0;
 	while (bit < 8)
 	{
-		ack_received = 0;
+		i = 0;
+		g_ack_received = 0;
 		if (c >> bit & 1)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-        while (!ack_received) 
-  			; 
+		while (!g_ack_received && i++ < 1000)
+			usleep(10);
+		if (i >= 1000)
+		{
+			message_wrong_server();
+			exit(1);
+		}
 		bit++;
 	}
 }
@@ -51,12 +69,13 @@ int	main(int argc, char *argv[])
 
 	if (argc != 3)
 		return (0);
-
-	pid = ft_atoi(argv[1]); 
+	pid = ft_atoi(argv[1]);
 	message = argv[2];
 	signal(SIGUSR1, ack_handler);
+	signal(SIGUSR2, ack_handler);
 	while (*message)
-		send_char(pid, *message++);	
-	send_char(pid, '\n');	
+		send_char(pid, *message++);
+	send_char(pid, '\n');
+	message_succesfuly_sent();
 	return (0);
 }

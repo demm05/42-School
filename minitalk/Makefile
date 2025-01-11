@@ -1,14 +1,16 @@
 CLIENT = client
 SERVER = server
-TEST = include
+
 HDIR = ./include
 SDIR = ./srcs
 ODIR = ./objs
 
-LIBFT = ./libftprintf.a
+LIBFT = ./ft_printf/libftprintf.a
 
+E_SRCS := $(wildcard $(SDIR)/*.c)
 C_SRCS := $(wildcard $(SDIR)/client/*.c)
 S_SRCS := $(wildcard $(SDIR)/server/*.c)
+E_OBJS := $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(E_SRCS)) 
 C_OBJS := $(patsubst $(SDIR)/client/%.c, $(ODIR)/client/%.o, $(C_SRCS))
 S_OBJS := $(patsubst $(SDIR)/server/%.c, $(ODIR)/server/%.o, $(S_SRCS))
 
@@ -22,10 +24,10 @@ $(shell mkdir -p $(ODIR)/server)
 
 all: $(LIBFT) $(CLIENT) $(SERVER)
 
-$(CLIENT): $(C_OBJS) $(LIBFT)
+$(CLIENT): $(C_OBJS) $(E_OBJS) $(LIBFT) 
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(SERVER): $(S_OBJS) $(LIBFT)
+$(SERVER): $(S_OBJS) $(E_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(ODIR)/%.o: $(SDIR)/%.c
@@ -33,6 +35,8 @@ $(ODIR)/%.o: $(SDIR)/%.c
 
 $(LIBFT):
 	$(MAKE) -C ./ft_printf/ 
+
+bonus: $(CLIENT) $(SERVER)
 
 clean:
 	@rm -rf $(ODIR)
