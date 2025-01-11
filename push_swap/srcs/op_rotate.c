@@ -6,7 +6,7 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:56:11 by dmelnyk           #+#    #+#             */
-/*   Updated: 2025/01/06 20:30:29 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2025/01/11 19:23:33 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void	internal_ra(t_stack *stack, int print)
 {
-	t_list	*last;
-	t_list	*first;
+	t_node	*last;
+	t_node	*first;
 
 	if (!stack->a || !stack->a->next)
 		return ;
@@ -34,8 +34,8 @@ static void	internal_ra(t_stack *stack, int print)
 
 static void	internal_rb(t_stack *stack, int print)
 {
-	t_list	*last;
-	t_list	*first;
+	t_node	*last;
+	t_node	*first;
 
 	if (!stack->b || !stack->b->next)
 		return ;
@@ -66,5 +66,5 @@ void	rr(t_stack *stack)
 {
 	internal_ra(stack, 1);
 	internal_rb(stack, 1);
-	write(1, "rr", 2);
+	write(1, "rr\n", 3);
 }

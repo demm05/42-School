@@ -11,7 +11,7 @@ C_SRCS := $(wildcard $(SDIR)/*.c)
 C_OBJS := $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(C_SRCS))
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror -I $(HDIR)
+CFLAGS = -g -Wall -Wextra -I $(HDIR)
 
 all: directories $(LIB) $(BIN) 
 
@@ -36,7 +36,7 @@ clean:
 	@$(MAKE) -C $(LIB_DIR) clean
 
 fclean: clean
-	@rm -rf $(CLIENT) $(SERVER)
+	@rm -rf $(BIN)
 	@$(MAKE) -C $(LIB_DIR) fclean
 
 re: fclean all

@@ -6,16 +6,17 @@
 /*   By: dmelnyk <dmelnyk@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 15:27:48 by dmelnyk           #+#    #+#             */
-/*   Updated: 2025/01/06 16:54:36 by dmelnyk          ###   ########.fr       */
+/*   Updated: 2025/01/11 17:19:48 by dmelnyk          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
+#include <limits.h>
 
-static int	ft_atoi(const char *nptr)
+static long	ft_atoi(const char *nptr)
 {
-	int	result;
-	int	sign;
+	long	result;
+	int		sign;
 
 	result = 0;
 	sign = 1;
@@ -25,7 +26,11 @@ static int	ft_atoi(const char *nptr)
 		if (*nptr++ == '-')
 			sign *= -1;
 	while (*nptr >= '0' && *nptr <= '9' && *nptr)
+	{
 		result = result * 10 + (*nptr++ - '0');
+		if ((result * sign > INT_MAX) || (result * sign < INT_MIN))
+			break ;
+	}
 	return (result * sign);
 }
 
@@ -58,23 +63,28 @@ static int	get_i_of_next_num(char	*str)
 	return (i);
 }
 
-static int	check_for_duplicate(t_list *lst, int num)
+static int	check_for_duplicate(t_node *lst, int num)
 {
 	while (lst)
 	{
-		if (lst->data == num)
+		if (lst->nbr == num)
 			return (1);
 		lst = lst->next;
 	}
 	return (0);
 }
 
-static int	parse_str(char *str, t_list **lst)
+static int	parse_str(char *str, t_node **lst)
 {
-	int	num;
-	int	i;
+	long	num;
+	int		i;
 
 	num = ft_atoi(str);
+	if (num > INT_MAX || num < INT_MIN)
+	{
+		ft_printf("Size of number exceed size of integer type\n");
+		return (-1);
+	}
 	if (check_for_duplicate(*lst, num))
 	{
 		ft_printf("Duplicate of numbers\n");
@@ -90,9 +100,9 @@ static int	parse_str(char *str, t_list **lst)
 	return (i);
 }
 
-t_list	*parse_argv(int argc, char *argv[])
+t_node	*parse_argv(int argc, char *argv[])
 {
-	t_list	*head;
+	t_node	*head;
 	char	*str;
 	int		i;
 	int		j;
