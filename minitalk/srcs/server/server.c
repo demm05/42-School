@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/minitalk.h"
+#include <signal.h>
 
 int	process_bit(int sig)
 {
@@ -32,24 +33,18 @@ int	process_bit(int sig)
 
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
-	static int	last_known_pid;
-	static int	temp_call_pid;
+	static sig_atomic_t				last_pid;
 
 	(void)context;
-	if (last_known_pid != info->si_pid && !temp_call_pid)
+	if (last_pid != info->si_pid && last_pid)
 	{
-		message_receiveng_from_client(info->si_pid);
-		last_known_pid = info->si_pid;
+		kill(info->si_pid, SIGUSR2);
+		return ;
 	}
-	if (!temp_call_pid)
-		temp_call_pid = info->si_pid;
-	else if (temp_call_pid != info->si_pid)
-	{
-		message_collision_clients(info->si_pid);
-		exit (1);
-	}
+	else
+		last_pid = info->si_pid; 
 	if (process_bit(sig))
-		temp_call_pid = 0;
+		last_pid = 0;
 	kill(info->si_pid, SIGUSR1);
 }
 

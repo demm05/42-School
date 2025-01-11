@@ -23,5 +23,4 @@ void	message_receiveng_from_client(int pid);
 void	message_collision_clients(int pid);
 void	message_wrong_server(void);
 void	message_succesfuly_sent(void);
-
 #endif

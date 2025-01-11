@@ -18,11 +18,8 @@ S_OBJS := $(patsubst $(SDIR)/server/%.c, $(ODIR)/server/%.o, $(S_SRCS))
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Werror -I $(HDIR)
 
-$(shell mkdir -p $(ODIR))
-$(shell mkdir -p $(ODIR)/client)
-$(shell mkdir -p $(ODIR)/server)
 
-all: $(LIBFT) $(CLIENT) $(SERVER)
+all: directories $(LIBFT) $(CLIENT) $(SERVER)
 
 $(CLIENT): $(C_OBJS) $(E_OBJS) $(LIBFT) 
 	$(CC) $(CFLAGS) $^ -o $@
@@ -36,7 +33,12 @@ $(ODIR)/%.o: $(SDIR)/%.c
 $(LIBFT):
 	$(MAKE) -C ./ft_printf/ 
 
-bonus: $(CLIENT) $(SERVER)
+bonus: all
+
+directories:
+	$(shell mkdir -p $(ODIR))
+	$(shell mkdir -p $(ODIR)/client)
+	$(shell mkdir -p $(ODIR)/server)
 
 clean:
 	@rm -rf $(ODIR)
@@ -48,4 +50,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re 
+.PHONY: all bonus clean fclean re directories 

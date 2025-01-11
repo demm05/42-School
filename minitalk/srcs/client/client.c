@@ -11,13 +11,21 @@
 /* ************************************************************************** */
 
 #include "../../include/minitalk.h"
+#include <signal.h>
 
 volatile sig_atomic_t	g_ack_received = 0;
 
 void	ack_handler(int sig)
 {
-	(void)sig;
-	g_ack_received = 1;
+	if (sig == SIGUSR2)
+	{
+		ft_printf("I'm sorry but another client sending message, "
+			"and minitalk doesnt support multiple clients "
+			"send a massages simultaneously! Try again in few seconds!\n");
+		exit(1);
+	}
+	else if (sig == SIGUSR1)
+		g_ack_received = 1;
 }
 
 int	ft_atoi(const char *nptr)
@@ -51,9 +59,9 @@ void	send_char(pid_t pid, int c)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		while (!g_ack_received && i++ < 1000)
-			usleep(10);
-		if (i >= 1000)
+		while (!g_ack_received && i++ < 100)
+			usleep(10000);
+		if (!g_ack_received)
 		{
 			message_wrong_server();
 			exit(1);
@@ -70,12 +78,14 @@ int	main(int argc, char *argv[])
 	if (argc != 3)
 		return (0);
 	pid = ft_atoi(argv[1]);
+	ft_printf("My pid: %d\n", getpid());
 	message = argv[2];
 	signal(SIGUSR1, ack_handler);
 	signal(SIGUSR2, ack_handler);
 	while (*message)
 		send_char(pid, *message++);
 	send_char(pid, '\n');
+	send_char(pid, 0);
 	message_succesfuly_sent();
 	return (0);
 }
