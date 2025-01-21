@@ -1,0 +1,6 @@
+[submodule "libft"]
+	path = libft
+	url = https://github.com/demm05/libft.git
+[submodule "push_swap"]
+	path = push_swap
+	url = https://github.com/demm05/push_swap.git
