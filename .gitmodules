@@ -7,3 +7,12 @@
 [submodule "minitalk"]
 	path = minitalk
 	url = https://github.com/demm05/minitalk-42.git
+[submodule "minishell-42"]
+	path = minishell-42
+	url = https://github.com/demm05/minishell-42.git
+[submodule "philo-42"]
+	path = philo-42
+	url = https://github.com/demm05/philo-42.git
+[submodule "fractol-42"]
+	path = fractol-42
+	url = https://github.com/demm05/fractol-42.git
