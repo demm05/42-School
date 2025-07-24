@@ -16,3 +16,12 @@
 [submodule "fractol-42"]
 	path = fractol-42
 	url = https://github.com/demm05/fractol-42.git
+[submodule "cub3D"]
+	path = cub3D
+	url = https://github.com/demm05/cub3d-42.git
+[submodule "CPP"]
+	path = CPP
+	url = https://github.com/demm05/cpp-42.git
+[submodule "Inception"]
+	path = Inception
+	url = https://github.com/demm05/Inception-42.git
